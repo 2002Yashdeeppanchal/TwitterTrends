@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter Trending Topics</title>
+</head>
+<body>
+    <h1>Click the button to get the top 5 trending topics on Twitter</h1>
+    <button id="fetchTrendingBtn">Get Trending Topics</button>
+    <div id="trendingResults" style="margin-top: 20px;"></div>
+
+    <script>
+        // Add click event listener for the button
+        document.getElementById("fetchTrendingBtn").addEventListener("click", function() {
+            // Make a request to the backend to fetch trending topics
+            fetch('/getTrendingTopics')
+                .then(response => response.json())
+                .then(data => {
+                    // Display the trending topics in the UI
+                    const resultsDiv = document.getElementById('trendingResults');
+                    if (data.trendingTopics && data.trendingTopics.length > 0) {
+                        let htmlContent = '<h2>Top 5 Trending Topics</h2><ul>';
+                        data.trendingTopics.forEach(topic => {
+                            htmlContent += `<li>${topic}</li>`;
+                        });
+                        htmlContent += `</ul><p>Request was completed successfully!</p>`;
+                        resultsDiv.innerHTML = htmlContent;
+                    } else {
+                        resultsDiv.innerHTML = `<p>No trending topics found.</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching trending topics:', error);
+                    document.getElementById('trendingResults').innerHTML = '<p>Failed to fetch trending topics.</p>';
+                });
+        });
+    </script>
+</body>
+</html>
